@@ -47,19 +47,27 @@ jobs:
       - name: Add Android platform
         run: npx cap add android || echo "Android already added"
 
-      # 8. Sync Capacitor FIRST
+      # 8. Sync Capacitor
       - name: Sync Capacitor
         run: npx cap sync android
 
-      # 9. Replace Android icons AFTER sync
+      # 9. Remove adaptive icon XML files that override PNGs
+      - name: Remove XML icon overrides
+        run: |
+          rm -rf android/app/src/main/res/mipmap-anydpi-v26/
+          echo "✅ Removed adaptive icon XML overrides"
+
+      # 10. Replace all Android icons
       - name: Replace Android icons
         run: |
+          # Create all necessary directories
           mkdir -p android/app/src/main/res/mipmap-mdpi
           mkdir -p android/app/src/main/res/mipmap-hdpi
           mkdir -p android/app/src/main/res/mipmap-xhdpi
           mkdir -p android/app/src/main/res/mipmap-xxhdpi
           mkdir -p android/app/src/main/res/mipmap-xxxhdpi
           
+          # Copy your custom icon to all densities
           cp resources/icon.png android/app/src/main/res/mipmap-mdpi/ic_launcher.png
           cp resources/icon.png android/app/src/main/res/mipmap-mdpi/ic_launcher_round.png
           cp resources/icon.png android/app/src/main/res/mipmap-hdpi/ic_launcher.png
@@ -70,16 +78,18 @@ jobs:
           cp resources/icon.png android/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.png
           cp resources/icon.png android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png
           cp resources/icon.png android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png
+          
+          echo "✅ Icons replaced successfully"
 
-      # 10. Make gradlew executable
+      # 11. Make gradlew executable
       - name: Make gradlew executable
         run: chmod +x android/gradlew
 
-      # 11. Build debug APK
+      # 12. Build debug APK
       - name: Build debug APK
         run: cd android && ./gradlew assembleDebug --stacktrace
 
-      # 12. Upload APK
+      # 13. Upload APK
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
