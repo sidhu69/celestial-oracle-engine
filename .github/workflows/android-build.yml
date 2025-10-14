@@ -47,17 +47,19 @@ jobs:
       - name: Add Android platform
         run: npx cap add android || echo "Android already added"
 
-      # 8. Replace old icons with your new icon
+      # 8. Sync Capacitor FIRST
+      - name: Sync Capacitor
+        run: npx cap sync android
+
+      # 9. Replace Android icons AFTER sync
       - name: Replace Android icons
         run: |
-          # Create all mipmap directories explicitly
           mkdir -p android/app/src/main/res/mipmap-mdpi
           mkdir -p android/app/src/main/res/mipmap-hdpi
           mkdir -p android/app/src/main/res/mipmap-xhdpi
           mkdir -p android/app/src/main/res/mipmap-xxhdpi
           mkdir -p android/app/src/main/res/mipmap-xxxhdpi
           
-          # Copy icons to each directory
           cp resources/icon.png android/app/src/main/res/mipmap-mdpi/ic_launcher.png
           cp resources/icon.png android/app/src/main/res/mipmap-mdpi/ic_launcher_round.png
           cp resources/icon.png android/app/src/main/res/mipmap-hdpi/ic_launcher.png
@@ -68,10 +70,6 @@ jobs:
           cp resources/icon.png android/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.png
           cp resources/icon.png android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png
           cp resources/icon.png android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png
-
-      # 9. Sync Capacitor
-      - name: Sync Capacitor
-        run: npx cap sync android
 
       # 10. Make gradlew executable
       - name: Make gradlew executable
