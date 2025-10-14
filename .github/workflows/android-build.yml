@@ -48,26 +48,26 @@ jobs:
         run: npx cap add android || echo "Android already added"
 
       # 8. Replace old icons with your new icon
-- name: Replace Android icons
-  run: |
-    # Create all mipmap directories explicitly
-    mkdir -p android/app/src/main/res/mipmap-mdpi
-    mkdir -p android/app/src/main/res/mipmap-hdpi
-    mkdir -p android/app/src/main/res/mipmap-xhdpi
-    mkdir -p android/app/src/main/res/mipmap-xxhdpi
-    mkdir -p android/app/src/main/res/mipmap-xxxhdpi
-    
-    # Copy icons to each directory
-    cp resources/icon.png android/app/src/main/res/mipmap-mdpi/ic_launcher.png
-    cp resources/icon.png android/app/src/main/res/mipmap-mdpi/ic_launcher_round.png
-    cp resources/icon.png android/app/src/main/res/mipmap-hdpi/ic_launcher.png
-    cp resources/icon.png android/app/src/main/res/mipmap-hdpi/ic_launcher_round.png
-    cp resources/icon.png android/app/src/main/res/mipmap-xhdpi/ic_launcher.png
-    cp resources/icon.png android/app/src/main/res/mipmap-xhdpi/ic_launcher_round.png
-    cp resources/icon.png android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png
-    cp resources/icon.png android/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.png
-    cp resources/icon.png android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png
-    cp resources/icon.png android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png
+      - name: Replace Android icons
+        run: |
+          # Create all mipmap directories explicitly
+          mkdir -p android/app/src/main/res/mipmap-mdpi
+          mkdir -p android/app/src/main/res/mipmap-hdpi
+          mkdir -p android/app/src/main/res/mipmap-xhdpi
+          mkdir -p android/app/src/main/res/mipmap-xxhdpi
+          mkdir -p android/app/src/main/res/mipmap-xxxhdpi
+          
+          # Copy icons to each directory
+          cp resources/icon.png android/app/src/main/res/mipmap-mdpi/ic_launcher.png
+          cp resources/icon.png android/app/src/main/res/mipmap-mdpi/ic_launcher_round.png
+          cp resources/icon.png android/app/src/main/res/mipmap-hdpi/ic_launcher.png
+          cp resources/icon.png android/app/src/main/res/mipmap-hdpi/ic_launcher_round.png
+          cp resources/icon.png android/app/src/main/res/mipmap-xhdpi/ic_launcher.png
+          cp resources/icon.png android/app/src/main/res/mipmap-xhdpi/ic_launcher_round.png
+          cp resources/icon.png android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png
+          cp resources/icon.png android/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.png
+          cp resources/icon.png android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png
+          cp resources/icon.png android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png
 
       # 9. Sync Capacitor
       - name: Sync Capacitor
