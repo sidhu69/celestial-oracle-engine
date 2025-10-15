@@ -16,14 +16,14 @@ const App = () => {
   const [showSplash, setShowSplash] = useState(true);
 
   useEffect(() => {
-    // Initialize AdMob when app starts
+    // Initialize AdMob when app starts (with error handling)
     const initializeAds = async () => {
       try {
         await adService.initialize();
         await adService.showBanner();
-        console.log('✅ AdMob initialized successfully');
+        console.log('✅ AdMob setup complete');
       } catch (error) {
-        console.error('❌ AdMob initialization failed:', error);
+        console.log('ℹ️ Ad initialization skipped:', error);
       }
     };
 
@@ -31,7 +31,9 @@ const App = () => {
 
     // Cleanup: hide banner when component unmounts
     return () => {
-      adService.hideBanner().catch(console.error);
+      adService.hideBanner().catch(() => {
+        // Silently ignore errors on cleanup
+      });
     };
   }, []);
 
