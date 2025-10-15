@@ -57,7 +57,7 @@ jobs:
       - name: Configure AdMob
         run: |
           # Add AdMob App ID to AndroidManifest.xml
-          sed -i '/<application/a \        <meta-data\n            android:name="com.google.android.gms.ads.APPLICATION_ID"\n            android:value="ca-app-pub-3940256099942544~3347511713"/>' android/app/src/main/AndroidManifest.xml
+          sed -i '/<application/a \    <meta-data\n        android:name="com.google.android.gms.ads.APPLICATION_ID"\n        android:value="ca-app-pub-3375938019790298~8473700663"/>' android/app/src/main/AndroidManifest.xml
           echo "✅ AdMob configured in AndroidManifest"
 
       # 10. Remove adaptive icon XML files that override PNGs
