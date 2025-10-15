@@ -8,11 +8,32 @@ import { SplashScreen } from "@/components/SplashScreen";
 import Index from "./pages/Index";
 import AstrologyView from "./pages/AstrologyView";
 import NotFound from "./pages/NotFound";
+import { adService } from "./services/adMob";
 
 const queryClient = new QueryClient();
 
 const App = () => {
   const [showSplash, setShowSplash] = useState(true);
+
+  useEffect(() => {
+    // Initialize AdMob when app starts
+    const initializeAds = async () => {
+      try {
+        await adService.initialize();
+        await adService.showBanner();
+        console.log('✅ AdMob initialized successfully');
+      } catch (error) {
+        console.error('❌ AdMob initialization failed:', error);
+      }
+    };
+
+    initializeAds();
+
+    // Cleanup: hide banner when component unmounts
+    return () => {
+      adService.hideBanner().catch(console.error);
+    };
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>
