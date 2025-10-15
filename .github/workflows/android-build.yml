@@ -53,11 +53,11 @@ jobs:
       - name: Sync Capacitor
         run: npx cap sync android
 
-      # 9. Configure AdMob in AndroidManifest
+      # 9. Configure AdMob in AndroidManifest - FIXED VERSION
       - name: Configure AdMob
         run: |
-          # Add AdMob App ID to AndroidManifest.xml
-          sed -i '/<application/a \    <meta-data\n        android:name="com.google.android.gms.ads.APPLICATION_ID"\n        android:value="ca-app-pub-3375938019790298~8473700663"/>' android/app/src/main/AndroidManifest.xml
+          # Add AdMob App ID to AndroidManifest.xml (FIXED SYNTAX)
+          sed -i '/<application/a\    <meta-data\n        android:name="com.google.android.gms.ads.APPLICATION_ID"\n        android:value="ca-app-pub-3375938019790298~8473700663" />' android/app/src/main/AndroidManifest.xml
           echo "✅ AdMob configured in AndroidManifest"
 
       # 10. Remove adaptive icon XML files that override PNGs
