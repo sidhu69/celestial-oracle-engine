@@ -53,12 +53,14 @@ jobs:
       - name: Sync Capacitor
         run: npx cap sync android
 
-      # 9. Configure AdMob in AndroidManifest - FIXED VERSION
+      # 9. Configure AdMob - PERL METHOD (100% RELIABLE)
       - name: Configure AdMob
         run: |
-          # Add AdMob App ID to AndroidManifest.xml (FIXED SYNTAX)
-          sed -i '/<application/a\    <meta-data\n        android:name="com.google.android.gms.ads.APPLICATION_ID"\n        android:value="ca-app-pub-3375938019790298~8473700663" />' android/app/src/main/AndroidManifest.xml
+          perl -i -pe 'print "    <meta-data\n        android:name=\"com.google.android.gms.ads.APPLICATION_ID\"\n        android:value=\"ca-app-pub-3375938019790298~8473700663\" />\n" if /<application/' android/app/src/main/AndroidManifest.xml
           echo "✅ AdMob configured in AndroidManifest"
+          echo ""
+          echo "📄 Manifest preview (first 20 lines):"
+          head -20 android/app/src/main/AndroidManifest.xml
 
       # 10. Remove adaptive icon XML files that override PNGs
       - name: Remove XML icon overrides
