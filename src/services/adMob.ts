@@ -1,23 +1,14 @@
 import { Capacitor } from '@capacitor/core';
+import type { 
+  AdMob as AdMobType, 
+  BannerAdOptions, 
+  InterstitialAdOptions,
+  BannerAdSize as BannerAdSizeType,
+  BannerAdPosition as BannerAdPositionType
+} from '@capacitor-community/admob';
 
 // Check if we're on a native platform
 const isNativePlatform = Capacitor.isNativePlatform();
-
-// Only import AdMob on native platforms
-let AdMob: any = null;
-let BannerAdSize: any = null;
-let BannerAdPosition: any = null;
-
-if (isNativePlatform) {
-  try {
-    const admobModule = require('@capacitor-community/admob');
-    AdMob = admobModule.AdMob;
-    BannerAdSize = admobModule.BannerAdSize;
-    BannerAdPosition = admobModule.BannerAdPosition;
-  } catch (error) {
-    console.log('AdMob not available:', error);
-  }
-}
 
 // Your actual Ad Unit IDs from AdMob
 const AD_UNITS = {
@@ -38,9 +29,12 @@ const CURRENT_AD_UNITS = USE_TEST_ADS ? TEST_AD_UNITS : AD_UNITS;
 
 class AdService {
   private initialized = false;
+  private AdMob: typeof AdMobType | null = null;
+  private BannerAdSize: typeof BannerAdSizeType | null = null;
+  private BannerAdPosition: typeof BannerAdPositionType | null = null;
 
   async initialize() {
-    if (!isNativePlatform || !AdMob) {
+    if (!isNativePlatform) {
       console.log('⚠️ AdMob only works on native platforms');
       return;
     }
@@ -51,10 +45,17 @@ class AdService {
     }
 
     try {
-      await AdMob.initialize({
+      // Dynamic import - only loads on native platforms
+      const admobModule = await import('@capacitor-community/admob');
+      this.AdMob = admobModule.AdMob;
+      this.BannerAdSize = admobModule.BannerAdSize;
+      this.BannerAdPosition = admobModule.BannerAdPosition;
+
+      await this.AdMob.initialize({
         requestTrackingAuthorization: true,
         initializeForTesting: USE_TEST_ADS,
       });
+      
       this.initialized = true;
       console.log('✅ AdMob initialized');
     } catch (error) {
@@ -63,20 +64,20 @@ class AdService {
   }
 
   async showBanner() {
-    if (!isNativePlatform || !AdMob || !this.initialized) {
+    if (!isNativePlatform || !this.AdMob || !this.initialized) {
       console.log('⚠️ Cannot show banner - not on native platform or not initialized');
       return;
     }
 
     try {
-      const options = {
+      const options: BannerAdOptions = {
         adId: CURRENT_AD_UNITS.banner,
-        adSize: BannerAdSize.BANNER,
-        position: BannerAdPosition.BOTTOM_CENTER,
+        adSize: this.BannerAdSize!.BANNER,
+        position: this.BannerAdPosition!.BOTTOM_CENTER,
         margin: 0,
       };
 
-      await AdMob.showBanner(options);
+      await this.AdMob.showBanner(options);
       console.log('✅ Banner ad displayed');
     } catch (error) {
       console.error('❌ Banner error:', error);
@@ -84,12 +85,12 @@ class AdService {
   }
 
   async hideBanner() {
-    if (!isNativePlatform || !AdMob) {
+    if (!isNativePlatform || !this.AdMob) {
       return;
     }
 
     try {
-      await AdMob.hideBanner();
+      await this.AdMob.hideBanner();
       console.log('✅ Banner hidden');
     } catch (error) {
       console.error('❌ Hide banner error:', error);
@@ -97,18 +98,18 @@ class AdService {
   }
 
   async showInterstitial() {
-    if (!isNativePlatform || !AdMob || !this.initialized) {
+    if (!isNativePlatform || !this.AdMob || !this.initialized) {
       console.log('⚠️ Cannot show interstitial - not on native platform or not initialized');
       return;
     }
 
     try {
-      const options = {
+      const options: InterstitialAdOptions = {
         adId: CURRENT_AD_UNITS.interstitial,
       };
 
-      await AdMob.prepareInterstitial(options);
-      await AdMob.showInterstitial();
+      await this.AdMob.prepareInterstitial(options);
+      await this.AdMob.showInterstitial();
       console.log('✅ Interstitial shown');
     } catch (error) {
       console.error('❌ Interstitial error:', error);
