@@ -40,10 +40,9 @@ jobs:
       - name: Build Vite app
         run: npm run build
 
-      # 6. Initialize Capacitor
-      - name: Initialize Capacitor
-        run: |
-          npx cap init "Celestial Oracle" "com.celestial.oracle" --web-dir=dist || echo "Already initialized"
+      # 6. Skip Capacitor init (already configured)
+      - name: Skip Capacitor init
+        run: echo "Using existing capacitor.config.ts"
 
       # 7. Add Android platform
       - name: Add Android platform
