@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,6 +14,7 @@ import {
 import { Calendar, Clock, MapPin, Sparkles, Languages } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { adService } from "@/services/adMob";
 
 interface AstrologyFormProps {
   onLoading: (loading: boolean) => void;
@@ -27,10 +28,13 @@ export const AstrologyForm = ({ onLoading }: AstrologyFormProps) => {
   const [systemType, setSystemType] = useState<"vedic" | "western">("vedic");
   const [language, setLanguage] = useState("english");
   const { toast } = useToast();
+  
+  // Track number of reports generated for ad display
+  const reportCountRef = useRef(0);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!birthDate || !birthTime || !birthPlace) {
       toast({
         title: "Missing Information",
@@ -54,6 +58,18 @@ export const AstrologyForm = ({ onLoading }: AstrologyFormProps) => {
       });
 
       if (error) throw error;
+
+      // Increment report count
+      reportCountRef.current += 1;
+
+      // Show interstitial ad after every 3rd report
+      if (reportCountRef.current % 3 === 0) {
+        try {
+          await adService.showInterstitial();
+        } catch (adError) {
+          console.log('Ad not shown:', adError);
+        }
+      }
 
       navigate("/astrology", { state: { reportData: data } });
       toast({
