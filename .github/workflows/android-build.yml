@@ -1,4 +1,4 @@
-name: Build Android APK
+name: Build Android APK with AdMob
 run-name: Build Celestial Oracle Android App 🚀
 
 on:
@@ -30,9 +30,11 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      # 4. Install dependencies
+      # 4. Install dependencies + AdMob plugin
       - name: Install dependencies
-        run: npm install
+        run: |
+          npm install
+          npm install @capacitor-community/admob
 
       # 5. Build Vite app
       - name: Build Vite app
@@ -51,13 +53,20 @@ jobs:
       - name: Sync Capacitor
         run: npx cap sync android
 
-      # 9. Remove adaptive icon XML files that override PNGs
+      # 9. Configure AdMob in AndroidManifest
+      - name: Configure AdMob
+        run: |
+          # Add AdMob App ID to AndroidManifest.xml
+          sed -i '/<application/a \        <meta-data\n            android:name="com.google.android.gms.ads.APPLICATION_ID"\n            android:value="ca-app-pub-3940256099942544~3347511713"/>' android/app/src/main/AndroidManifest.xml
+          echo "✅ AdMob configured in AndroidManifest"
+
+      # 10. Remove adaptive icon XML files that override PNGs
       - name: Remove XML icon overrides
         run: |
           rm -rf android/app/src/main/res/mipmap-anydpi-v26/
           echo "✅ Removed adaptive icon XML overrides"
 
-      # 10. Replace all Android icons
+      # 11. Replace all Android icons
       - name: Replace Android icons
         run: |
           # Create all necessary directories
@@ -81,15 +90,15 @@ jobs:
           
           echo "✅ Icons replaced successfully"
 
-      # 11. Make gradlew executable
+      # 12. Make gradlew executable
       - name: Make gradlew executable
         run: chmod +x android/gradlew
 
-      # 12. Build debug APK
+      # 13. Build debug APK
       - name: Build debug APK
         run: cd android && ./gradlew assembleDebug --stacktrace
 
-      # 13. Upload APK
+      # 14. Upload APK
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
